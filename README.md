@@ -1,49 +1,53 @@
-# Advanced Auth & Security Shield 🛡️
+# Authentication
 
-Este proyecto es un **Sistema de Autenticación Híbrido** de grado profesional desarrollado con Node.js y Express. Se enfoca en la implementación de "Defensa en Profundidad" para mitigar las vulnerabilidades más comunes del **OWASP Top 10**.
+Proyecto de aprendizaje con Node.js y Express para practicar autenticación y autorización. Combina tokens JWT con sesiones persistidas en archivos y organiza la lógica en rutas, controladores, middlewares, modelos y utilidades.
 
-## 🎯 Propósito del Proyecto
-Demostrar la implementación de estándares de seguridad modernos, combinando la flexibilidad de los tokens con la robustez de las sesiones tradicionales, protegiendo la integridad de los datos del usuario en cada capa.
+## Funcionalidades confirmadas
 
-## 🚀 Características de Seguridad
+- Registro e inicio de sesión mediante las rutas del proyecto.
+- Generación y validación de JWT.
+- Sesiones con `express-session` y `session-file-store`.
+- Cookies mediante `cookie-parser`.
+- Protección de cabeceras con `helmet`.
+- Rate limiting, validación CSRF y filtrado de entradas mediante middlewares propios.
+- Restricción de rutas administrativas por rol.
+- Hashing de contraseñas con `bcrypt`.
 
-### 1. Autenticación Híbrida
-El sistema permite gestionar la identidad del usuario mediante dos mecanismos coordinados:
-* **Stateless JWT:** Uso de Access Tokens de corta vida y Refresh Tokens gestionados para sesiones modernas.
-* **Stateful Sessions:** Implementación de `express-session` con almacenamiento persistente en disco (`session-file-store`).
+## Tecnologías
 
-### 2. Capas de Protección Avanzada
-* **Protección CSRF:** Validación de tokens para prevenir ataques de falsificación de peticiones en sesiones basadas en cookies.
-* **Mitigación de XSS:** Middleware personalizado de "escape" que sanitiza todas las entradas de texto (`username`, `email`, `password`) antes de ser procesadas.
-* **Rate Limiting:** Protección contra ataques de fuerza bruta en el endpoint de login mediante limitación de intentos por ventana de tiempo.
-* **Seguridad de Cabeceras:** Uso de `Helmet.js` para configurar automáticamente cabeceras HTTP seguras.
+Node.js, Express 5, `bcrypt`, `jsonwebtoken`, `express-session`, `session-file-store`, `cookie-parser`, `helmet`, `express-rate-limit` y `db-local`.
 
-### 3. Autorización y Roles (RBAC)
-* Sistema de **Role-Based Access Control** que restringe el acceso a rutas críticas (como eliminación de usuarios) exclusivamente a perfiles con rol `admin`.
+## Estructura
 
-## 🛠️ Stack Tecnológico
-* **Runtime:** Node.js
-* **Framework:** Express.js
-* **Criptografía:** Bcrypt (hashing de contraseñas con Salt Rounds).
-* **Tokens:** JSON Web Tokens (JWT).
-* **Base de Datos:** Persistencia local mediante `db-local` (Schema-based).
+```text
+app.js                 Configuración y arranque del servidor
+routes/                Rutas de autenticación y administración
+controller/            Controladores
+middlewares/           JWT, sesión, CSRF, filtrado, rate limit y roles
+models/                Repositorio de usuarios
+utils/                 Cookies, JWT y sesiones
+```
 
-## 📂 Estructura del Proyecto
-middlewares/: Contiene los "guardias" de seguridad (JWT, CSRF, XSS filter, Role Guard).
+## Instalación y ejecución
 
-controller/: Lógica de negocio para autenticación y administración.
+```bash
+git clone https://github.com/victornuneez/Authentication.git
+cd Authentication
+npm install
+cp .env.example .env
+node app.js
+```
 
-routes/: Definición de endpoints protegidos y públicos.
+El servidor imprime `http://localhost:3000` al arrancar. El proyecto no define scripts `start`, `dev` o `test` en `package.json`; por eso se documenta `node app.js`.
 
-models/: Repositorio de datos y esquemas de usuario.
-
-utils/: Herramientas de ayuda para manejo de cookies y generación de tokens.
-
-## ⚙️ Configuración del Entorno
-
-Para ejecutar este proyecto localmente, crea un archivo `.env` en la raíz con las siguientes variables:
+## Variables de entorno
 
 ```env
 PORT=3000
-SECRET_JWT_KEY=tu_clave_secreta_super_larga_aqui
-NODE_ENV=development 
+SECRET_JWT_KEY=reemplazar_por_una_clave_local
+NODE_ENV=development
+```
+
+## Autor
+
+Victor Nunez
