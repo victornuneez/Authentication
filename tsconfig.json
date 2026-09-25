@@ -1,0 +1,47 @@
+{
+  // Visit https://aka.ms/tsconfig to read more about this file
+  "compilerOptions": {
+    // File Layout
+    "rootDir": "./src", // Indica la carpeta raiz en donde se encuentra nuestro codigo fuente que va a ser generado en la carpeta build.
+    "outDir": "build", // Define donde y en que carpeta TS colocara los archivos JS generados a partir de nuestro codigo Typescript.
+    "allowJs": true,  // Incluye los archivos .js en el proceso de empaquetado y exportacion al build.Asi evitamos no exportar archivos .js
+    // que la terminal o el navegador necesite para ejecutar la app completa.
+
+    // Environment Settings
+    // See also https://aka.ms/tsconfig/module
+    "module": "nodenext",
+    "target": "esnext",
+    "types": ["node"], // Si deshabilitamos esta opcion Typescript puede incluir automaticamente los paquetes @types disponibles en node_modules
+    // For nodejs:
+    // "lib": ["esnext"],
+    // "types": ["node"],
+    // and npm install -D @types/node
+
+    // Other Outputs
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+
+    // Stricter Typechecking Options
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+
+    // Style Options
+    // "noImplicitReturns": true,
+    // "noImplicitOverride": true,
+    // "noUnusedLocals": true,
+    // "noUnusedParameters": true,
+    // "noFallthroughCasesInSwitch": true,
+    // "noPropertyAccessFromIndexSignature": true,
+
+    // Recommended Options
+    "strict": true,
+    "jsx": "react-jsx",
+    "verbatimModuleSyntax": true,  // Esta opcion TS exige diferenciar las importaciones que existe en runtime y los que sirce para comprobar tipos
+    "isolatedModules": true,
+    "noUncheckedSideEffectImports": true,
+    "moduleDetection": "force",
+    "skipLibCheck": true,
+  },
+  "include": ["src/**/*"] // Le dice a TS que archivos forman parte del proyecto
+}
