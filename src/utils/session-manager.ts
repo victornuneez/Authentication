@@ -5,7 +5,7 @@ import type { Response, Request} from 'express';
 
 
 // funcion para generar una sesion nueva  unica en cada login, guarda info minima necesaria para la session
-const generateSession = (req: Request, res: Response, user: UserData, method: Method) => {
+const generateSession = (req: Request, res: Response, user: UserDB, method: Method) => {
     
     try {
         if (method === 'cookie') {
@@ -15,7 +15,7 @@ const generateSession = (req: Request, res: Response, user: UserData, method: Me
     
                 // Al guardar datos aca, express-session envia automáticamente una cookie con el ID de sesión al navegador para vincular al usuario con esta sesion
                 // (Guardamos los datos para identificar al usuario en cada request)
-                req.session.user = { _id: user._id, role: user.role };
+                req.session.user = { _id: user._id!, role: user.role };
                 
                 // Creamos este token para verificar si las peticiones(POST,DELETE,PUT) vienen del propio sitio y no de otro sitio externo.
                 // Se guarda en la sesion del servidor pero se envia en el navegador tambien
@@ -55,7 +55,7 @@ const generateSession = (req: Request, res: Response, user: UserData, method: Me
 
     }
 
-const assignSession = (req: Request, res: Response, user: UserData) => {
+const assignSession = (req: Request, res: Response, user: UserDB) => {
     const { method = 'cookie' } = req.body; // Si no envian el metodo usamos cookies por defecto
     return generateSession(req, res, user, method);  
 }
