@@ -4,17 +4,18 @@ import { randomUUID } from 'node:crypto';
 const SECRET_JWT_KEY = process.env.SECRET_JWT_KEY;
 
 // Funcion para generar el JWT (accessToken) vive poco.
-const generateAccesToken = (user: UserData): string => {
+const generateAccesToken = (user: UserDB): string => {
     if(!SECRET_JWT_KEY) throw new Error('Falta SECRET_JWT_KEY');
     return jwt.sign(
-        { id: user._id, role: user.role }, SECRET_JWT_KEY, { expiresIn: '15m' } );
+        { _id: user._id, role: user.role }, SECRET_JWT_KEY, { expiresIn: '15m' } );
 };
 
-// Funcion para realizar el refresh token para mantener la sesion del usuario activa.(Cada vez que se pide un accesToken nuevo, tambien se crea un nuevo refreshToken)
-const generateRefreshToken = (user: UserData): string => {
+// Funcion para realizar el refresh token para mantener la sesion del usuario activa.
+// (Cada vez que se pide un accesToken nuevo, tambien se crea un nuevo refreshToken)
+const generateRefreshToken = (user: UserDB): string => {
     if(!SECRET_JWT_KEY) throw new Error('Falta SECRET_JWT_KEY');
     return jwt.sign(
-        { id: user._id, jti: randomUUID(), type: 'refresh'}, //id de usuario sirve para saber quien pide un nuevo access token. 
+        { _id: user._id, jti: randomUUID(), type: 'refresh'}, //id de usuario sirve para saber quien pide un nuevo access token. 
         SECRET_JWT_KEY,
         { expiresIn: '7d' }
     );
