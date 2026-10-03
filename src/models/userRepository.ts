@@ -1,5 +1,6 @@
 
 import { Schema, model } from "mongoose";
+import type { UserDBDocument } from "../types/typeRefreshTokenDocument.js";
 
 const userSchema = new Schema<UserDB>({
     username: { type : String, required: true, trim: true, unique: true, lowercase: true },
@@ -11,20 +12,28 @@ const userSchema = new Schema<UserDB>({
 });
 
 // Funcion para guardar datos del usuario en la base de datos.
-const saveUser = async (userData: UserDB): Promise<UserDB> => {
+const saveUser = async (userData: UserDB): Promise<UserDBDocument> => {
     return await User.create(userData);
 }
 
 // Funcion reutilizable para buscar un usuario tanto por su id, nombre o email y devuelve el objeto completo de ese usuario
-const findUser = async (user: string): Promise<UserDB | null>  => {
-    return await User.findOne({ $or:[ { _id: user } ,{ username: user }, { email: user }]} );
+const findUserById = async (_id: string): Promise<UserDBDocument | null>  => {
+    return await User.findOne({ _id: _id });
+};
+
+const findUserByUsername = async (username: string): Promise<UserDBDocument | null>  => {
+    return await User.findOne({ username: username });
+};
+
+const findUserByEmail = async (email: string): Promise<UserDBDocument | null>  => {
+    return await User.findOne({ email: email });
 };
 
 const deleteUser = async (id: string): Promise<void> => {
     await User.deleteOne({ _id: id });
 };
 
-const getAllUsers = async ():Promise<UserDB[]> => {
+const getAllUsers = async ():Promise<UserDBDocument[]> => {
     return await User.find();
 }
 
@@ -34,4 +43,4 @@ export const User = model<UserDB>('User', userSchema);
 export default User;
 
 // Exportamos los metodos que creamos para que el controllador los use
-export { saveUser, findUser, deleteUser, getAllUsers }
+export { saveUser, findUserById, findUserByUsername, findUserByEmail, deleteUser, getAllUsers }
