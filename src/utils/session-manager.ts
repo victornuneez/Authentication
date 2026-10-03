@@ -1,19 +1,23 @@
 import { generateAccesToken, generateRefreshToken } from './jwt-helpers.js';
 import { setSecureCookie } from './cookie-helper.js';
 import { randomUUID } from 'node:crypto';
+import { saveRefreshToken } from '../models/refreshTokenRepository.js';
+import jwt from 'jsonwebtoken';
 import type { Response, Request} from 'express';
 
 
 // funcion para generar una sesion nueva  unica en cada login, guarda info minima necesaria para la session
-const generateSession = (req: Request, res: Response, user: UserDB, method: Method) => {
+const generateSession = async (req: Request, res: Response, user: UserDB, method: Method) => {
     
     try {
         if (method === 'cookie') {
-            // Con regenerate nos aseguramos que cada login por cookies reciba una nueva id sesion nueva y segura.(evita usar una sesion del usuario que el atacante ya conoce.(cada login = nuevaID))
+            // Con regenerate nos aseguramos que cada login por cookies reciba una nueva id sesion nueva y segura.
+            // (evita usar una sesion del usuario que el atacante ya conoce.(cada login = nuevaID))
             return req.session.regenerate((error: Error | null | undefined) => {   
                 if (error) return res.status(500).json({ error: 'Error al iniciar sesion'}); 
     
-                // Al guardar datos aca, express-session envia automáticamente una cookie con el ID de sesión al navegador para vincular al usuario con esta sesion
+                // Al guardar datos aca, express-session envia automáticamente una cookie con el ID de sesión al navegador para vincular al usuario 
+                // con esta sesion
                 // (Guardamos los datos para identificar al usuario en cada request)
                 req.session.user = { _id: user._id!, role: user.role };
                 
@@ -33,6 +37,13 @@ const generateSession = (req: Request, res: Response, user: UserDB, method: Meth
         } else if (method === 'jwt') {
                 const token = generateAccesToken(user);
                 const refresh = generateRefreshToken(user);
+                
+                // Decodificamos nuestro refreshToken creado para poder guardarlo en la base de datos con nuestro tipo RefreshTokenPayload.
+                const refreshToken = jwt.decode(refresh) as RefreshTokenPayload;
+                if(typeof refreshToken.userId !== 'string' || typeof refreshToken.jti !== 'string' || refreshToken.type !== 'refresh') {
+                    throw new Error('El decode devolvio otra tipo que no es RefreshTokenPayload')
+                } 
+                await saveRefreshToken(refreshToken);
                 
                 // Guardamos y enviamos el refresh token en una cookie 
                 setSecureCookie(res, 'refreshToken', refresh)
