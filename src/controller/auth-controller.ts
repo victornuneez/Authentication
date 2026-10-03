@@ -1,9 +1,11 @@
 import bcrypt from 'bcrypt';
-import { findUser, saveUser } from '../models/userRepository.js'
+import { findUserByEmail, findUserById, findUserByUsername, saveUser } from '../models/userRepository.js'
 import { assignSession } from '../utils/session-manager.js';
 import jwt from 'jsonwebtoken';
-import { generateAccesToken } from '../utils/jwt-helpers.js';
+import { generateAccesToken, generateRefreshToken } from '../utils/jwt-helpers.js';
+import { deleteRefreshToken, findRefreshToken, saveRefreshToken } from '../models/refreshTokenRepository.js';
 import type { Request, Response } from 'express';
+import { setSecureCookie } from '../utils/cookie-helper.js';
 
 const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS!);
 const SECRET_JWT_KEY = process.env.SECRET_JWT_KEY;
@@ -20,7 +22,7 @@ const register = async (req: Request, res: Response) => {
         }
 
         // Falta validar que el usuario no pueda usar un nombre de usuario existente.
-        const usernameExist = await findUser(username);
+        const usernameExist = await findUserByUsername(username);
         if (usernameExist) {
             return res.status(409).json({ message: 'El nombre de usuario ya en uso'})
         }
@@ -56,7 +58,7 @@ const login = async (req: Request, res: Response) => {
         };
 
         // Buscamos si el username existe en la base de datos(Devuelve el objeto JS completo, no solo el username).
-        const userData = await findUser(email);
+        const userData = await findUserByEmail(email);
         if (!userData) {
             return res.status(401).json({ message: 'Credenciales invalidas 1'});
         };
@@ -87,15 +89,35 @@ const refresh = async (req: Request, res: Response) => {
         // Verificamos si el token es valido y no ha expirado.
         const payload = jwt.verify(refreshToken, SECRET_JWT_KEY!) as RefreshTokenPayload;
         // Verificamos si el token es realmente un refresh Token.
-        if (payload.type !== 'refresh') {
+        if (typeof payload.userId !== 'string' || typeof payload.jti !== 'string' ||payload.type !== 'refresh') {
             return res.status(401).json({ message: 'No existe el refresh token '})
         }
+
+        // Validamos si el refreshToken recibido desde el navegador existe aun en la base de datos
+        const validRefreshToken = await findRefreshToken(payload.jti);
+        if(!validRefreshToken) {
+            return res.status(401).json({ message: 'RefreshToken invalido' })
+        }
         
-        const userData = await findUser(payload._id);
+        // Validamos si el usuario existe aun en la base datos.
+        const userData = await findUserById(payload.userId);
         if(!userData) return res.status(404).json({ message: 'El usuario no existe'});;
         
-        // Usamos los datos del payload directamente para generar el nuevo refreshToken.
+        // Usamos los datos del user de la BD para generar el nuevo accessToken.
         const newAccessToken = generateAccesToken(userData);
+        const newRefreshToken = generateRefreshToken(userData);
+        
+        // Borramos el refreshToken recibido desde el navegador y enviamos el nuevo refreshToken creado al usuario.
+        await deleteRefreshToken(payload.jti);
+        setSecureCookie(res, 'refreshToken', newRefreshToken);
+        
+        // Volvemos a decodificar y validar el nuevo refreshToken para guardarlo nuevamente en la base de datos.
+        const decodeRefreshToken = jwt.decode(newRefreshToken) as RefreshTokenPayload;
+        if (typeof decodeRefreshToken.userId !== 'string' || typeof decodeRefreshToken.jti !== 'string' ||decodeRefreshToken.type !== 'refresh') {
+            throw new Error('El decode devolvio otra tipo que no es RefreshTokenPayload')
+        }
+        await saveRefreshToken(decodeRefreshToken);
+        
 
         // Devolvemos el nuevo accessToken al usuario
         return res.status(200).json({
@@ -107,23 +129,40 @@ const refresh = async (req: Request, res: Response) => {
         console.error(error);
         return res.status(403).json(({ message: 'Sesion expirada o token invalido' }))
     }
-
 }
 
 const logout = async (req: Request, res: Response) => {
 
-    // Borramos toda la sesion que tiene el usuario en el servidor
-    req.session.destroy((error) => {
-        if (error) {
-            return res.status(500).json({ message: 'Error al cerrar sesion'})
+    try {
+        // Obtenemos y validamos el refreshToken del navegador.
+        const refreshToken = req.cookies.refreshToken;
+        if (!refreshToken) {
+            return res.status(401).json({ message: 'Token de refresh no encontrado '});
         }
-        // Borramos las cookies del navegador de ambas sesiones.
-        res.clearCookie('connect.sid'); 
-        res.clearCookie('refreshToken');
-        
-        return res.status(200).json({ message: 'Session cerrada correctamente '});
     
-    });
+        // Verificamos si el token es valido y no ha expirado, tambien si tiene una estructura valida
+        const payload = jwt.verify(refreshToken, SECRET_JWT_KEY!) as RefreshTokenPayload;
+        if (typeof payload.userId !== 'string' || typeof payload.jti !== 'string' ||payload.type !== 'refresh') {
+            return res.status(401).json({ message: 'No existe el refresh token '})
+        }
+    
+        await deleteRefreshToken(payload.jti);
+    
+        // Borramos toda la sesion que tiene el usuario en el servidor
+        req.session.destroy((error) => {
+            if (error) {
+                return res.status(500).json({ message: 'Error al cerrar sesion'})
+            }
+            // Borramos las cookies del navegador de ambas sesiones.
+            res.clearCookie('connect.sid'); 
+            res.clearCookie('refreshToken');
+    
+            return res.status(200).json({ message: 'Session cerrada correctamente '});
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Error interno del servidor' });
+    }
 };
 
 export { register, login, refresh, logout }
