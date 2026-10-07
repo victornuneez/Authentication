@@ -1,6 +1,6 @@
 
 import { Schema, model } from "mongoose";
-import type { RefreshTokenDocument } from "../types/typeRefreshTokenDocument.js";
+import type { RefreshTokenDocument } from "../types/typeDocumentsMongoDB.js";
 
 const RefreshTokenSchema = new Schema<RefreshTokenPayload>({
     userId: { type: String, required: true, trim: true },
