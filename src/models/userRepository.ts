@@ -1,6 +1,6 @@
 
 import { Schema, model } from "mongoose";
-import type { UserDBDocument } from "../types/typeRefreshTokenDocument.js";
+import type { UserDBDocument } from "../types/typeDocumentsMongoDB.js";
 
 const userSchema = new Schema<UserDB>({
     username: { type : String, required: true, trim: true, unique: true, lowercase: true },
@@ -29,7 +29,7 @@ const findUserByEmail = async (email: string): Promise<UserDBDocument | null>  =
     return await User.findOne({ email: email });
 };
 
-const deleteUser = async (id: string): Promise<void> => {
+const deleteUserById = async (id: string): Promise<void> => {
     await User.deleteOne({ _id: id });
 };
 
@@ -43,4 +43,4 @@ export const User = model<UserDB>('User', userSchema);
 export default User;
 
 // Exportamos los metodos que creamos para que el controllador los use
-export { saveUser, findUserById, findUserByUsername, findUserByEmail, deleteUser, getAllUsers }
+export { saveUser, findUserById, findUserByUsername, findUserByEmail, deleteUserById, getAllUsers }
