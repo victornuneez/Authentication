@@ -1,44 +1,46 @@
-import user from '../models/userRepository.js'
+import type { Request, Response } from 'express';
+import { getAllUsers, deleteUserById, findUserById } from '../models/userRepository.js';
 
-const getAllUsers = (req, res) => {
+const getUsers = async (req: Request, res: Response) => {
     try {
         // Buscamos a todos los usuarios de la base de datos(array con objetos = todos los datos de los usuarios).
-        const users = user.find();
+        const users = await getAllUsers();
         
         // Recorremos cada usuario con .map, creamos un nuevo objeto sin info sensible(cada u creamos un nuevo objeto con los campos nuevos). 
-        const safeUsers = users.map( u => ({ id: u._id, username: u.username, role: u.role}));
+        const safeUsers = users.map( u => ({ username: u.username, role: u.role}));
         
-        res.json({
+        return res.status(200).json({
             message: 'Listado de usuarios (vista admin)',
             data: safeUsers // lista de usuarios filtrada
         });
 
     } catch(error) {
-        res.status(500).json({ message: 'Error al obtener usuarios '});
+        console.error(error);
+        return res.status(500).json({ message: 'Error al obtener usuarios '});
     }
 };
 
 
 
-const deleteUser = (req, res) => {
+const deleteUser = async (req: Request, res: Response) => {
     try {
         //  Extraemos el ID que viene en la URL
         const { id } = req.params;
 
+        if(typeof id !== 'string') throw new Error('El id obtenido de los parametros es invalido');  
+
         // Verificamos si el usuario realmente existe en la base de datos
-        // Usamos "_id" porque así lo guarda db-local por defecto
-        const userExists = user.findOne({ _id: id });
+        const userExists = await findUserById(id);
         
         if (!userExists) {
             return res.status(404).json({ message: 'Usuario no encontrado. No se pudo eliminar.' });
         }
 
-        // Ejecutamos la eliminación usando el método remove() de db-local
-        user.remove({ _id: id });
+        await deleteUserById(id);
 
         // Respondemos con éxito
         return res.status(200).json({ 
-            message: `Usuario '${userExists.username}' (ID: ${id}) eliminado correctamente` 
+            message: `Usuario eliminado correctamente` 
         });
 
         // Capturamos cualquier error inesperado para que el servidor no se caiga
@@ -48,4 +50,4 @@ const deleteUser = (req, res) => {
     }
 };
 
-export { getAllUsers, deleteUser }
+export { getUsers, deleteUser }

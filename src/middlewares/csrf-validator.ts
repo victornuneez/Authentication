@@ -1,8 +1,9 @@
 /*
 Verifica si la peticion realmente viene desde la aplicacion y no desde otra pagina maliciosa.
 */
+import type { Request, Response, NextFunction } from 'express';
 
-const validateCSRF =(req, res, next) => {
+const validateCSRF =(req: Request, res: Response, next: NextFunction) => {
 
     // Si el usuario se logueo por JWT, no es necesario validar CSRF, entonces lo dejamos pasar(JWT no es vulnerable a CSRF).
     if (req.authMethod === 'jwt') return next();
@@ -12,7 +13,8 @@ const validateCSRF =(req, res, next) => {
     const sessionToken = req.session?.csrfToken;
     const headerToken = req.headers['x-csrf-token']; 
 
-    // Verificamos si los CSRF TOKEN existen y si son distintos, esto evita que sitios maliciosos hagan acciones usando solo las cookies.
+    // Verificamos que las peticiones autenticadas mediante sesion incluyan un token CSRF valido, para evitar que sitios maliciosos realicen
+    //acciones utilizando cookies de sesion del usuario en nuestra app.
     if (!sessionToken || !headerToken || sessionToken !== headerToken) {
         return res.status(403).json({ message: 'Token CSRF invalido o faltante' })
     }
