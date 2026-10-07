@@ -12,6 +12,7 @@ type Method = 'jwt' | 'cookie';
 
 // Contrato que define las propiedades y tipos de datos que se guardan en la base de datos.
 interface UserDB {
+    _id?: string;
     username: string;
     email: string;
     password: string;
@@ -26,3 +27,6 @@ interface RefreshTokenPayload {
     jti: string;
     type: RefreshToken;
 }
+
+// Definimos el unico valor del rol que permite realizar las acciones de administrador en la app. 
+type Role = 'admin';
