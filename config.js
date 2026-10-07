@@ -1,3 +1,0 @@
-PORT=3000
-SECRET_JWT_KEY=tu_clave_secreta_aqui
-NODE_ENV=development
