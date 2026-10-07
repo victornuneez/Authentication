@@ -60,13 +60,13 @@ const login = async (req: Request, res: Response) => {
         // Buscamos si el username existe en la base de datos(Devuelve el objeto JS completo, no solo el username).
         const userData = await findUserByEmail(email);
         if (!userData) {
-            return res.status(401).json({ message: 'Credenciales invalidas 1'});
+            return res.status(401).json({ message: 'Credenciales invalidas'});
         };
 
         // Comparamos las contrasenhas si son correctas
         const compareHash = await bcrypt.compare(password, userData.password)
         if (!compareHash) {
-            return res.status(401).json({ message: 'Credenciales invalidas 2'});
+            return res.status(401).json({ message: 'Email o contrasenha incorrecta'});
         };
 
         return assignSession(req, res, userData)
@@ -103,7 +103,7 @@ const refresh = async (req: Request, res: Response) => {
         const userData = await findUserById(payload.userId);
         if(!userData) return res.status(404).json({ message: 'El usuario no existe'});;
         
-        // Usamos los datos del user de la BD para generar el nuevo accessToken.
+        // Usamos los datos del user de la BD para generar el nuevo accessToken y refreshToken.
         const newAccessToken = generateAccesToken(userData);
         const newRefreshToken = generateRefreshToken(userData);
         
