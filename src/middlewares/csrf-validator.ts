@@ -1,5 +1,5 @@
 /*
-Verifica si la peticion realmente viene desde la aplicacion y no desde otra pagina maliciosa.
+Verifica si la peticion realmente viene desde la aplicacion y no desde otra pagina maliciosa para ambos metodos de sesion.
 */
 import type { Request, Response, NextFunction } from 'express';
 
