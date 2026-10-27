@@ -16,5 +16,5 @@ router.post('/register',filter, register);
 router.post('/login',filter, loginLimiter, login);
 router.post('/logout', logout);
 
-// exportamos router como el archivo principal de archivo.(Asi las rutas del router quedan activadas en el servidor)
+// Exportamos router como el archivo principal de archivo.(Asi las rutas del router quedan activadas en el servidor)
 export default router;
