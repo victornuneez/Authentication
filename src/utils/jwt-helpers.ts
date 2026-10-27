@@ -7,7 +7,7 @@ const SECRET_JWT_KEY = process.env.SECRET_JWT_KEY;
 const generateAccessToken = (user: UserDB): string => {
     if(!SECRET_JWT_KEY) throw new Error('Falta SECRET_JWT_KEY');
     return jwt.sign(
-        { _id: user._id, role: user.role }, SECRET_JWT_KEY, { expiresIn: '20s' } );
+        { _id: user._id, role: user.role }, SECRET_JWT_KEY, { expiresIn: '15m' } );
 };
 
 // Funcion para realizar el refresh token para mantener la sesion del usuario activa.
