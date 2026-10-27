@@ -4,7 +4,7 @@ Además, actua como una barrera de seguridad: si no detecta una sesion activa.
 */
 import type { Request, Response, NextFunction } from 'express';
 
-const verifySession = (req: Request, res: Response, next: NextFunction) => {
+export const verifySession = (req: Request, res: Response, next: NextFunction) => {
 
     // Verificamos si el usuario ya esta logueado con JWT, lo pasamos al siguiente middleware o ruta.
     if (req.user) return next();
@@ -17,7 +17,5 @@ const verifySession = (req: Request, res: Response, next: NextFunction) => {
         return next();
     }
 
-    return res.status(401).json({ message: 'No autorizado. Inicia sesion'})
+    return res.status(401).render('login', { error: 'No autorizado. Inicia sesion'})
 };
-
-export { verifySession }
