@@ -2,7 +2,7 @@
   // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
     // File Layout
-    "rootDir": "./src", // Indica la carpeta raiz en donde se encuentra nuestro codigo fuente que va a ser generado en la carpeta build.
+    "rootDir": "src", // Indica la carpeta raiz en donde se encuentra nuestro codigo fuente que va a ser generado en la carpeta build.
     "outDir": "build", // Define donde y en que carpeta TS colocara los archivos JS generados a partir de nuestro codigo Typescript.
     "allowJs": true,  // Incluye los archivos .js en el proceso de empaquetado y exportacion al build.Asi evitamos no exportar archivos .js
     // que la terminal o el navegador necesite para ejecutar la app completa.
