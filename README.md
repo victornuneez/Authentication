@@ -209,5 +209,19 @@ Durante este proceso se trabajó en:
 
 La aplicación también evolucionó desde una implementación centrada en el backend hacia una aplicación web con formularios, vistas renderizadas en el servidor y estilos propios.
 
+### Acceso al panel de administración
+
+Por defecto, los usuarios registrados tienen el rol `user`. Para probar las funcionalidades del panel de administración, es necesario cambiar manualmente el campo `role` del usuario a `admin` desde MongoDB Compass.
+
+**Pasos:**
+1. Abrir la base de datos del proyecto en MongoDB Compass.
+2. Entrar en la colección de usuarios.
+3. Buscar el documento del usuario que se desea promover.
+4. Cambiar el valor del campo `role` de `user` a `admin`.
+5. Guardar los cambios e iniciar sesión con ese usuario.
+
+> **Nota:** Este procedimiento es únicamente para pruebas y desarrollo. No compartas credenciales ni otorgues permisos de administrador en un entorno de producción sin los controles correspondientes.
+
+Un detalle importante: después de cambiar el rol, cerrá la sesión y volvé a iniciar sesión para probarlo, especialmente si el rol queda incluido en el JWT o en los datos de sesión.
 
 Desarrollado como proyecto de aprendizaje y práctica de backend, TypeScript, autenticación y desarrollo web con Node.js y Express.
