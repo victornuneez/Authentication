@@ -8,8 +8,10 @@ export const loginLimiter = rateLimit({
     windowMs: 10 * 60 * 1000, // Tenes una ventana de 10 minutos para intentar loguearte desde el primer intento de logueo.
     max: 3, // intentos de loguearte permitidos
     standardHeaders: true,
-    message: {
-        error: 'Llegaste a los 3 intentos permitidos. Por seguridad, tu acceso ha sido bloqueado, intenta nuevamente en un rato'
+    handler: (req, res) => {
+        res.status(429).render('login', {
+            error: 'Llegaste a los 3 intentos permitidos. Por seguridad, tu acceso ha sido bloqueado, intenta nuevamente en un rato'
+        });
     }
 });
 
