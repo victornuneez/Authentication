@@ -30,7 +30,7 @@
   },
   "scripts": {
     "dev": "tsx watch src/app.ts",
-    "build": "tsc && copyfiles -u 1 src/views/**/* build",
+    "build": "tsc && copyfiles -u 1 \"src/views/**/*.ejs\" build && xcopy src\\public build\\public /E /I /Y",
     "start": "node build/app.js"
   }
 }
