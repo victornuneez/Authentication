@@ -4,13 +4,12 @@
 import type { Response } from 'express';
 
 // Funcion para realizar(setear) una cookie con estas reglas de seguridad.
-const setSecureCookie = (res: Response, name: string , value: string): void => {
+export const setSecureCookie = (res: Response, name: string , value: string, maxAge: number): void => {
     res.cookie(name, value, {                           // "res.cookie" envia una cabecera Set-Cookie
         httpOnly: true,                                 // El JS del navegador no puede leer la cookie, no se puede robar la cookie facilmente
         sameSite: 'lax',                                // Controla cuando el navegador envia la cookie automaticamente al servidor. Permite enlaces externos GET y protege contra mayoria de CSRF
-        maxAge: 7 * 24 * 60 * 1000,
+        maxAge: maxAge,                // Duracion 7 dias.
         path: '/'                                       // '/' significa que se puede usar en toda la aplicacion.
     });
 };
 
-export { setSecureCookie }

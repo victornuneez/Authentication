@@ -1,0 +1,302 @@
+/* ===== Base general ===== */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 40px 20px;
+    min-height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #E5E7EB;
+    background: #0B1120;
+}
+
+h1 {
+    margin-top: 0;
+    margin-bottom: 24px;
+    text-align: center;
+    font-size: 28px;
+    color: #F3F4F6;
+}
+
+/* ===== Formularios ===== */
+form {
+    margin: 0;
+}
+
+body:has(input[type="email"]) form {
+    max-width: 420px;
+    margin: 0 auto;
+    padding: 32px;
+    background: #151F35;
+    border: 1px solid #26344F;
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #D8E1F0;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+input[type="email"],
+input[type="password"],
+input[type="text"] {
+    width: 100%;
+    margin-bottom: 20px;
+    padding: 12px 14px;
+    border: 1px solid #34445F;
+    border-radius: 8px;
+    font: inherit;
+    color: #F3F4F6;
+    background: #0B1120;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input::placeholder {
+    color: #94A3B8;
+}
+
+input:focus {
+    outline: none;
+    border-color: #3B82F6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.remember-me-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 22px;
+}
+
+.remember-me-container label {
+    margin: 0;
+    color: #D8E1F0;
+    font-weight: normal;
+}
+
+.remember-me-container input {
+    accent-color: #3B82F6;
+}
+
+button {
+    padding: 11px 18px;
+    border: none;
+    border-radius: 8px;
+    background: #3B82F6;
+    color: #FFFFFF;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+
+button:hover {
+    background: #2563EB;
+}
+
+body:has(input[type="email"]) form button {
+    width: 100%;
+}
+
+/* ===== Enlaces ===== */
+a {
+    color: #93C5FD;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+a:hover {
+    color: #DBEAFE;
+    text-decoration: underline;
+}
+
+.register-redirect {
+    margin: 22px 0 0;
+    text-align: center;
+    font-size: 14px;
+    color: #CBD5E1;
+}
+
+/* ===== Mensajes de error ===== */
+.error-message {
+    max-width: 420px;
+    margin: 0 auto 20px;
+    padding: 12px 16px;
+    border: 1px solid #7F303F;
+    border-radius: 8px;
+    background: #351A28;
+    color: #FCA5A5;
+    font-size: 14px;
+}
+
+/* ===== Tabla de administración ===== */
+table {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto 24px;
+    border-collapse: collapse;
+    overflow: hidden;
+    background: #151F35;
+    border: 1px solid #26344F;
+    border-radius: 12px;
+    box-shadow: 0 5px 24px rgba(0, 0, 0, 0.2);
+}
+
+th,
+td {
+    padding: 15px 18px;
+    text-align: left;
+    border-bottom: 1px solid #26344F;
+}
+
+th {
+    background: #202D48;
+    color: #BFDBFE;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+td {
+    color: #E5E7EB;
+}
+
+tbody tr {
+    background: #151F35;
+    transition: background 0.2s;
+}
+
+tbody tr:hover {
+    background: #1D2A43;
+}
+
+/* ===== Botón para eliminar usuarios ===== */
+td button {
+    background: #DC4545;
+}
+
+td button:hover {
+    background: #B92F2F;
+}
+
+/* ===== Pantalla de usuario ===== */
+body:has(h1 + p) > form[action="/logout"] {
+    max-width: 420px;
+    margin: 40px auto 0;
+    padding: 0;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    text-align: center;
+}
+
+body:has(h1 + p) > form[action="/logout"] button {
+    min-width: 140px;
+}
+
+/* ===== Botones de registro ===== */
+.register-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.register-actions button,
+.register-actions .btn-cancel {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 11px 18px;
+    border: none;
+    border-radius: 8px;
+    font: inherit;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.register-actions button {
+    background: #3B82F6;
+    color: #FFFFFF;
+}
+
+.register-actions button:hover {
+    background: #2563EB;
+}
+
+.register-actions .btn-cancel {
+    background: #26344F;
+    color: #BFDBFE;
+}
+
+.register-actions .btn-cancel:hover {
+    background: #34445F;
+    color: #FFFFFF;
+}
+
+/* ===== Volver al login ===== */
+.back-to-login {
+    max-width: 420px;
+    margin: 0 auto 20px;
+}
+
+.back-to-login a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #94A3B8;
+    font-size: 14px;
+    font-weight: 600;
+    transition: color 0.2s;
+}
+
+.back-to-login a:hover {
+    color: #BFDBFE;
+    text-decoration: none;
+}
+
+/* ===== Contenido de la pantalla de usuario ===== */
+body:has(h1 + p) > h1,
+body:has(h1 + p) > h1 + p {
+    text-align: center;
+}
+
+body:has(h1 + p) > h1 + p {
+    margin: 0 auto;
+    color: #A8B5CA;
+    font-size: 16px;
+}
+
+/* ===== Adaptación a pantallas pequeñas ===== */
+@media (max-width: 600px) {
+    body {
+        padding: 24px 14px;
+    }
+
+    body:has(input[type="email"]) form {
+        padding: 24px 20px;
+    }
+
+    table {
+        font-size: 13px;
+    }
+
+    th,
+    td {
+        padding: 10px 8px;
+    }
+
+    .register-actions {
+        gap: 8px;
+    }
+}
