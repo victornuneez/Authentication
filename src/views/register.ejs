@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
+    <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
 
-    <p>
-        <a href="/"> Back to login </a>
+    <p class="back-to-login">
+        <a href="/">← Back to login</a>
     </p>
 
     <h1>Register</h1>
@@ -30,8 +31,12 @@
         <input type="password" id="password" name="password" placeholder="Ingresa tu contraseña" required>
         
 
-        <button type="submit">Register</button>
-        <a href="/">Cancel</a>
+
+        <div class="register-actions">
+            <button type="submit">Register</button>
+            <a href="/" class="btn-cancel">Cancel</a>
+        </div>
+
 
     </form>
 </body>
